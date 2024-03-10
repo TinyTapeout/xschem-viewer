@@ -149,9 +149,11 @@ export class SVGRenderer extends EventTarget {
         g.setAttribute('transform', transforms.join(' '));
         g.setAttribute('tabindex', '0');
         parent.appendChild(g);
-        g.onclick = (e) => {
+        const componentClickHandler = () => {
           this.componentClickEmitter.fire(item.symbolReference.replace(/\.sym$/, '.sch'));
         };
+        g.addEventListener('click', componentClickHandler);
+        g.addEventListener('touchend', componentClickHandler);
         try {
           const component = await this.libraryLoader.load(item.symbolReference);
           const parsed = parse(component);
