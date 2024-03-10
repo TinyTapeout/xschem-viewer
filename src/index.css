@@ -42,6 +42,7 @@ h1 {
 
 #xschem {
   flex: 1;
+  color: #88dd00;
   display: flex;
   position: relative;
   overflow: hidden;

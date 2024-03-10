@@ -474,7 +474,9 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
 
       var peg$f14 = function (pairs) {
         // @ts-ignore
-        return Object.fromEntries(pairs ? [pairs[0]].concat(pairs[1].map((p) => p[1])) : []);
+        return Object.fromEntries(
+          pairs ? [pairs[0]].concat(pairs[1].map((p) => p[1])) : [],
+        ) as Record<string, string>;
       }; // @ts-ignore
 
       var peg$f15 = function (key, value) {
@@ -4188,7 +4190,7 @@ export type Netlisting = { type: 'Netlisting'; content: CurlyBracedString };
 export type CurlyBracedString = string;
 export type Escape = '\\' | '{' | '}';
 export type NotEscape = string;
-export type Properties = { [k: string]: any };
+export type Properties = Record<string, string>;
 export type Pair = [PropertyName, PropertyValue];
 export type PropertyName = string;
 export type PropertyValue = QuotedString | LiteralString;

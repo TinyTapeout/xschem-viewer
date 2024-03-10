@@ -68,7 +68,7 @@ NotEscape
 
 Properties
   = "{" _ pairs:(Pair (_ Pair)*)? _ "}" {
-      return Object.fromEntries(pairs ? [pairs[0]].concat(pairs[1].map(p => p[1])) : []);
+      return Object.fromEntries(pairs ? [pairs[0]].concat(pairs[1].map(p => p[1])) : []) as Record<string, string>;
     }
 
 Pair
