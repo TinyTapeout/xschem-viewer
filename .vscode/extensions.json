@@ -1,5 +1,7 @@
 {
   "recommendations": [
-    "peggyjs.peggy-language"
+    "peggyjs.peggy-language",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint"
   ]
 }
