@@ -22,18 +22,38 @@ export class LibraryLoader {
     if (cacheEntry != null) {
       return cacheEntry;
     }
+    const response = await this.fetchContent(path);
+    if (!response.ok) {
+      throw new Error(`File not found: ${path}`);
+    }
+    const content = await response.text();
+    this.cache.set(path, content);
+    return content;
+  }
+
+  private async fetchContent(path: string) {
+    if (path.toLowerCase().startsWith('https://')) {
+      const url = new URL(path);
+      console.log(url, url.hostname);
+      if (url.hostname === 'github.com') {
+        url.hostname = 'raw.githubusercontent.com';
+        const pathParts = url.pathname.substring(1).split('/');
+        if (pathParts[2] === 'blob') {
+          pathParts.splice(2, 1);
+          url.pathname = pathParts.join('/');
+        }
+        console.log(url);
+        return await fetch(url.toString());
+      } else {
+        return await fetch(url);
+      }
+    }
     for (const library of this.libraries) {
       if (path.startsWith(library.path)) {
         const url = library.url + path;
-        const response = await fetch(url);
-        if (response.ok) {
-          const content = await response.text();
-          this.cache.set(path, content);
-          return content;
-        }
+        return await fetch(url);
       }
     }
-
     throw new Error(`File not found: ${path}`);
   }
 }

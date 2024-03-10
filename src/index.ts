@@ -64,6 +64,7 @@ async function render(path: string) {
     pz.showRectangle(new DOMRect(0, 0, bbox.width, bbox.height));
     pz.resume();
   } catch (error) {
+    console.error('Error loading', path, error);
     loadingText.textContent = `Error loading ${path}: ${(error as Error).toString()}`;
   }
 }
