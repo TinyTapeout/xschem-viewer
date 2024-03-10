@@ -6,6 +6,8 @@ import { LibraryLoader } from './LibraryLoader';
 import { SVGRenderer } from './SVGRenderer';
 import { colors } from './colors';
 
+const defaultFile = 'sky130_tests/top.sch';
+
 const footer = document.querySelector('footer')!;
 footer.innerHTML = `
   xschem-viewer revision 
@@ -67,10 +69,24 @@ renderer.onLoadComponent.listen((path) => {
 });
 
 renderer.onComponentClick.listen(async (path) => {
-  if (await libraryLoader.fileExists(path)) {
-    await render(path);
+  if (!(await libraryLoader.fileExists(path))) {
+    return;
   }
+
+  const newParams = new URLSearchParams(window.location.search);
+  newParams.set('file', path);
+  history.pushState({ path }, '', '?' + newParams.toString());
+  await render(path);
+});
+
+window.addEventListener('popstate', (event) => {
+  const newPath =
+    (event.state?.path as string) ??
+    new URLSearchParams(window.location.search).get('file') ??
+    defaultFile;
+  void render(newPath);
 });
 
 const pz = panzoom(svgRoot, { maxZoom: 10, minZoom: 0.1 });
-void render('sky130_tests/top.sch');
+const topFile = new URLSearchParams(window.location.search).get('file') ?? defaultFile;
+void render(topFile);
