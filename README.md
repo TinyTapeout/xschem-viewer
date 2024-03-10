@@ -20,6 +20,14 @@ Explore and visualize [XSchem](https://xschem.sourceforge.io/stefan/index.html) 
 
 Enjoy!
 
+### Running the tests
+
+`npm test` will run the tests once. `npm run test:watch` will run the tests in watch mode.
+
+### Rebuilding the .sch parser
+
+When making changes to the [sch file parser](src/xschem-parser.peg), you will need to rebuild the parser by running `npm run build:parser`. This will generate a new `xschem-parser.ts` file in the `src` directory.
+
 ## License
 
 xschem-viewer is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for more details.

@@ -7,9 +7,11 @@
     "dev": "vite",
     "lint": "eslint --ext .ts,.tsx .",
     "build": "vite build",
+    "build:parser": "peggy --plugin ts-pegjs  -o src/xschem-parser.ts src/xschem-parser.peg",
     "format:check": "prettier --check **/*.{ts,js,css,tsx} !dist/** !node_modules/**",
     "start": "vite",
-    "test": "vitest",
+    "test": "vitest --run",
+    "test:watch": "vitest",
     "prepare": "husky"
   },
   "keywords": [
@@ -27,7 +29,9 @@
     "eslint-config-standard-with-typescript": "^43.0.1",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
+    "peggy": "^3.0.2",
     "prettier": "^3.2.5",
+    "ts-pegjs": "^4.2.1",
     "typescript": "~5.3.0",
     "vite": "^5.1.5",
     "vitest": "^1.3.1"

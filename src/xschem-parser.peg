@@ -1,0 +1,221 @@
+// XSCHEM .sch/.sym File Grammar
+// =============================
+
+Start
+  = _ version:VersionObject? _ objects:ObjectDefinition* { 
+    return [...(version ? [version] : []), ...objects]; 
+  }
+
+VersionObject
+  = "v" _ "{" _ version:VersionString _ license:LicenseText _ "}" {
+      return { type: "Version", ...version, license };
+    }
+
+VersionString
+  = "xschem" _ "version=" version:VersionNumber _ "file_version=" fileVersion:VersionNumber { 
+    return { version, fileVersion }; 
+  }
+  
+VersionNumber
+  = version:[0-9.]+ { return text(); }
+
+LicenseText
+  = text:[^}]* { return text.join(""); }
+
+ObjectDefinition
+  = obj:Object _ { return obj; }
+
+Object
+  = Line
+  / Rectangle
+  / Arc
+  / Text
+  / Polygon
+  / Wire
+  / Component
+  / Spice
+  / Verilog
+  / VHDL
+  / TEDAx
+  / Netlisting
+  / EmbeddedSymbol
+
+Spice
+  = "S" _ content:CurlyBracedString { return { type: "Spice", content }; }
+
+Verilog
+  = "V" _ content:CurlyBracedString { return { type: "Verilog", content }; }
+
+VHDL
+  = "G" _ content:CurlyBracedString { return { type: "VHDL", content }; }
+
+TEDAx
+  = "E" _ content:CurlyBracedString { return { type: "TEDAx", content }; }
+
+Netlisting
+  = "K" _ content:CurlyBracedString { return { type: "Netlisting", content }; }
+
+CurlyBracedString
+  = "{" _ content:(Escape / NotEscape)* "}" {
+      return content.join("");
+    }
+
+Escape
+  = "\\" value:( "\\" / "{" / "}" ) { return value; }
+
+NotEscape
+  = [^\\{}]+ { return text(); }
+
+Properties
+  = "{" _ pairs:(Pair (_ Pair)*)? _ "}" {
+      return Object.fromEntries(pairs ? [pairs[0]].concat(pairs[1].map(p => p[1])) : []);
+    }
+
+Pair
+  = key:PropertyName _ "=" _ value:PropertyValue {
+      return [key, value];
+    }
+
+PropertyName
+  = [a-zA-Z0-9_]+ { return text(); }
+
+PropertyValue
+  = QuotedString
+  / LiteralString
+  
+LiteralString 
+  = chars:(Escape / [^ \r\n\t{}])+ { return chars.join(""); }
+
+QuotedString 
+  = "\"" string:((StringCharacters / StringEscape)*) "\"" { return string.join(""); }
+
+StringCharacters
+  = [^\\"]+ { return text(); }
+
+StringEscape
+  = "\\\\" value:( "\\\\" / "\"" ) { return value; }
+  / "\\" value:[{}] { return value; }
+
+Line
+  = "L" _ layer:Integer _ x1:Coordinate _ y1:Coordinate _ x2:Coordinate _ y2:Coordinate _ props:Properties {
+      return {
+        type: "Line",
+        layer,
+        x1,
+        y1,
+        x2,
+        y2,
+        properties: props
+      };
+    }
+
+Rectangle
+  = "B" _ layer:Integer _ x1:Coordinate _ y1:Coordinate _ x2:Coordinate _ y2:Coordinate _ props:Properties {
+      return {
+        type: "Rectangle",
+        layer,
+        x1,
+        y1,
+        x2,
+        y2,
+        properties: props
+      };
+    }
+
+Polygon "polygon"
+  = "P" _ layer:Integer _ pointCount:Integer _ points:Points _ props:Properties {
+      return {
+        type: "Polygon",
+        layer,
+        points,
+        properties: props
+      };
+    }
+
+Points
+  = first:CoordinatePair rest:(_ CoordinatePair)* {
+      return [first].concat(rest.map(r => r[1]));
+    }
+
+CoordinatePair
+  = x:Coordinate _ y:Coordinate { return { x, y }; }
+
+Arc
+  = "A" _ layer:Integer _ centerX:Coordinate _ centerY:Coordinate _ radius:Coordinate _ startAngle:Angle _ sweepAngle:Angle _ props:Properties {
+      return {
+        type: "Arc",
+        layer,
+        centerX,
+        centerY,
+        radius,
+        startAngle,
+        sweepAngle,
+        properties: props
+      };
+    }
+
+Text
+  = "T" _ text:CurlyBracedString _ x:Coordinate _ y:Coordinate _ rotation:Integer _ mirror:Integer _ hSize:Float _ vSize:Float _ props:Properties {
+      return {
+        type: 'Text',
+        text,
+        x,
+        y,
+        rotation,
+        mirror,
+        hSize,
+        vSize,
+        properties: props
+      };
+    }
+
+Wire
+  = "N" _ x1:Coordinate _ y1:Coordinate _ x2:Coordinate _ y2:Coordinate _ props:Properties {
+      return {
+        type: "Wire",
+        x1,
+        y1,
+        x2,
+        y2,
+        properties: props
+      };
+    }
+
+Component
+  = "C" _ reference:CurlyBracedString _ x:Coordinate _ y:Coordinate _ rotation:Integer _ flip:Integer _ props:Properties {
+      return {
+        type: "Component",
+        symbolReference: reference,
+        x,
+        y,
+        rotation,
+        flip,
+        properties: props
+      };
+    }
+
+EmbeddedSymbol
+  = "[" _ symbol:Start _ "]" { return { type: "EmbeddedSymbol", symbol }; }
+
+Coordinate
+  = n:Float {
+      return parseFloat(n);
+    }
+
+Angle
+  = n:Float {
+      return parseFloat(n);
+    }
+
+Float
+  = "-"? [0-9]+ ("." [0-9]+)? {
+      return parseFloat(text());
+    }
+
+Integer
+  = "-"? [0-9]+ {
+      return parseInt(text(), 10);
+    }
+
+_
+  = [ \t\n\r]*
