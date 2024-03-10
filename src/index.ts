@@ -34,6 +34,10 @@ const libraryLoader = new LibraryLoader([
     url: 'https://raw.githubusercontent.com/StefanSchippers/xschem_sky130/main/',
   },
   {
+    path: 'sky130_stdcells/',
+    url: 'https://raw.githubusercontent.com/StefanSchippers/xschem_sky130/main/',
+  },
+  {
     path: 'mips_cpu/',
     url: 'https://raw.githubusercontent.com/StefanSchippers/xschem_sky130/main/',
   },
