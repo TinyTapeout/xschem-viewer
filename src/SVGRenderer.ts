@@ -149,19 +149,22 @@ export class SVGRenderer extends EventTarget {
         g.setAttribute('transform', transforms.join(' '));
         g.setAttribute('tabindex', '0');
         parent.appendChild(g);
+        const symFileName = item.symbolReference.endsWith('.sym')
+          ? item.symbolReference
+          : item.symbolReference + '.sym';
         const componentClickHandler = () => {
-          this.componentClickEmitter.fire(item.symbolReference.replace(/\.sym$/, '.sch'));
+          this.componentClickEmitter.fire(symFileName.replace(/\.sym$/, '.sch'));
         };
         g.addEventListener('click', componentClickHandler);
         g.addEventListener('touchend', componentClickHandler);
         try {
-          const component = await this.libraryLoader.load(item.symbolReference);
+          const component = await this.libraryLoader.load(symFileName);
           const parsed = parse(component);
           for (const subItem of parsed) {
             await this.renderItem(subItem, g, { ...item.properties, symname: symbolName });
           }
         } catch (e) {
-          console.error('Error loading component', item.symbolReference, e);
+          console.error('Error loading component', symFileName, e);
         }
         break;
       }
