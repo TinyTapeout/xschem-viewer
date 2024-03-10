@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2024 Tiny Tapeout LTD
+// Author: Uri Shaked
+
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import panzoom from 'panzoom';

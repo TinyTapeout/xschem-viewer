@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2024 Tiny Tapeout LTD
+// Author: Uri Shaked
+
 import { Layers } from './Layers';
 import { type LibraryLoader } from './LibraryLoader';
 import { EventEmitter } from './util/EventEmitter';

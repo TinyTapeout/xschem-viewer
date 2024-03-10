@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2024 Tiny Tapeout LTD
+// Author: Uri Shaked
+
 import type { Event, EventListener } from './Event';
 
 class EventImpl<T> implements Event<T> {
