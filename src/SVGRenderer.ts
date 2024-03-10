@@ -24,6 +24,9 @@ export class SVGRenderer extends EventTarget {
     parent: SVGElement,
     properties: Record<string, string> = {},
   ) {
+    // Many xschem symbols use the spice_get_voltage property, so specify a default value
+    properties.spice_get_voltage ??= '';
+
     switch (item.type) {
       case 'Wire': {
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
