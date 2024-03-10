@@ -28,6 +28,10 @@ const libraryLoader = new LibraryLoader([
     url: 'https://raw.githubusercontent.com/StefanSchippers/xschem/master/xschem_library/',
   },
   {
+    path: 'stdcells/',
+    url: 'https://raw.githubusercontent.com/StefanSchippers/xschem_sky130/main/',
+  },
+  {
     path: 'sky130_tests/',
     url: 'https://raw.githubusercontent.com/StefanSchippers/xschem_sky130/main/',
   },
