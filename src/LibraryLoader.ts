@@ -2,13 +2,17 @@
 // Copyright 2024 Tiny Tapeout LTD
 // Author: Uri Shaked
 
+import { githubURLToRaw } from './util/github';
+
 export interface ILibraryDefinition {
   path: string;
   url: string;
 }
 
 export class LibraryLoader {
-  cache = new Map<string, string>();
+  readonly cache = new Map<string, string>();
+
+  baseURL?: string;
 
   constructor(readonly libraries: ILibraryDefinition[]) {}
 
@@ -35,28 +39,27 @@ export class LibraryLoader {
     return content;
   }
 
-  private async fetchContent(path: string) {
+  private async fetchContent(path: string): Promise<Response> {
     if (path.toLowerCase().startsWith('https://')) {
-      const url = new URL(path);
-      console.log(url, url.hostname);
-      if (url.hostname === 'github.com') {
-        url.hostname = 'raw.githubusercontent.com';
-        const pathParts = url.pathname.substring(1).split('/');
-        if (pathParts[2] === 'blob') {
-          pathParts.splice(2, 1);
-          url.pathname = pathParts.join('/');
-        }
-        console.log(url);
-        return await fetch(url.toString());
-      } else {
-        return await fetch(url);
-      }
+      const url = githubURLToRaw(path);
+      return await fetch(url);
     }
     for (const library of this.libraries) {
       if (path.startsWith(library.path)) {
         const url = library.url + path;
         return await fetch(url);
       }
+    }
+    if (this.baseURL != null) {
+      const url = new URL(path, githubURLToRaw(this.baseURL));
+      const result = await fetch(url);
+      if (result.ok) {
+        return result;
+      }
+    }
+    if (!path.includes('/')) {
+      // as a fallback, look under devices/
+      return await this.fetchContent(`devices/${path}`);
     }
     throw new Error(`File not found: ${path}`);
   }

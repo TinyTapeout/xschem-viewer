@@ -59,6 +59,11 @@ target.appendChild(svgRoot);
 async function render(path: string) {
   loadingText.textContent = `Loading... ${path}`;
   svgRoot.style.visibility = 'hidden';
+
+  if (path.startsWith('https://')) {
+    libraryLoader.baseURL = path.substring(0, path.lastIndexOf('/') + 1);
+  }
+
   try {
     pz.pause();
     await renderer.render(path, svgRoot);
