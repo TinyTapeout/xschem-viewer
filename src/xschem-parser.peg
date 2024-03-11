@@ -84,21 +84,21 @@ PropertyName
   = [a-zA-Z0-9_]+ { return text(); }
 
 PropertyValue
-  = QuotedString
+  = str:QuotedString { return str.replace(/\\./g, m => m[1]);}
   / LiteralString
   
 LiteralString 
   = chars:(Escape / [^ \r\n\t{}])+ { return chars.join(""); }
 
 QuotedString 
-  = "\"" string:((StringCharacters / StringEscape)*) "\"" { return string.join(""); }
+  = "\"" string:((StringEscape / StringCharacters)*) "\"" { return string.join(""); }
 
 StringCharacters
   = [^\\"]+ { return text(); }
 
 StringEscape
-  = "\\\\" value:( "\\\\" / "\"" ) { return value; }
-  / "\\" value:[{}] { return value; }
+  = "\\\\\"" { return '\\"'; }
+  / "\\" value:. { return value; }
 
 Line
   = "L" _ layer:Integer _ x1:Coordinate _ y1:Coordinate _ x2:Coordinate _ y2:Coordinate _ props:Properties {

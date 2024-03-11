@@ -2,6 +2,8 @@
 // Copyright 2024 Tiny Tapeout LTD
 // Author: Uri Shaked
 
+/* eslint-disable no-template-curly-in-string */
+
 import { describe, expect, it } from 'vitest';
 import { parse } from './xschem-parser';
 
@@ -171,6 +173,59 @@ m=1}`;
     ]);
   });
 
+  it('parses a file with escaped quoted strings correctly (#1)', () => {
+    const content = `B 2 1400 -440 1660 -260 {flags=graph
+y1=0
+y2=170
+divy=4
+subdivy=1
+x1=0.0247231
+x2=0.0249981
+divx=8
+subdivx=4
+dataset=0
+unitx=m
+
+
+
+color="8 7"
+node="tcleval(\\\\"Xm1 power;vpp $\\{path\\}outi - i(v.$\\{path\\}vu) *\\\\"
+\\\\"Average;vpp $\\{path\\}outi - i(v.$\\{path\\}vu) * 200u ravg()\\\\")"
+jpeg_quality=30
+xlabmag=1.4}
+`;
+    const result = parse(content);
+    expect(result).toEqual([
+      {
+        type: 'Rectangle',
+        x1: 1400,
+        y1: -440,
+        x2: 1660,
+        y2: -260,
+        layer: 2,
+        properties: {
+          flags: 'graph',
+          y1: '0',
+          y2: '170',
+          divy: '4',
+          subdivy: '1',
+          x1: '0.0247231',
+          x2: '0.0249981',
+          divx: '8',
+          subdivx: '4',
+          dataset: '0',
+          unitx: 'm',
+          color: '8 7',
+          node:
+            'tcleval("Xm1 power;vpp ${path}outi - i(v.${path}vu) *"\n' +
+            '"Average;vpp ${path}outi - i(v.${path}vu) * 200u ravg()")',
+          jpeg_quality: '30',
+          xlabmag: '1.4',
+        },
+      },
+    ]);
+  });
+
   it('parses a file with multiple objects correctly', () => {
     const content = `
 L 4 -50 20 50 20 {dash=5}
@@ -329,7 +384,6 @@ spiceprefix=X
       {
         type: 'Text',
         text:
-          // eslint-disable-next-line no-template-curly-in-string
           'tcleval(gm=[to_eng [ngspice::get_node [subst -nocommand {\\@m.${path}@' +
           'spiceprefix@name\\.m1[gm]}]]] )',
         x: 32.5,
