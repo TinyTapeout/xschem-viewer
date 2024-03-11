@@ -80,7 +80,13 @@ export class SVGRenderer extends EventTarget {
             text.setAttribute('text-anchor', 'middle');
           }
           text.setAttribute('alignment-baseline', vCenter ? 'middle' : 'before-edge');
-          text.textContent = lines[i].replace(/@(\w+)/g, (match, p1) => properties[p1] ?? match);
+          text.textContent = lines[i].replace(/@([\w#:]+)/g, (match, attrName: string) => {
+            if (attrName.startsWith('#') && attrName.endsWith(':net_name')) {
+              // see https://github.com/TinyTapeout/xschem-viewer/issues/1#issuecomment-1989506966
+              return '';
+            }
+            return properties[attrName] ?? match;
+          });
           parent.appendChild(text);
         }
         break;
@@ -91,6 +97,15 @@ export class SVGRenderer extends EventTarget {
         if (flags.includes('graph')) {
           // We currently don't support graph rectangles
           break;
+        }
+        if (item.properties.pinnumber) {
+          for (let i = 0; i < 255; i++) {
+            const name = `#${i}:pinnumber`;
+            if (properties[name] == null) {
+              properties[name] = item.properties.pinnumber;
+              break;
+            }
+          }
         }
         if (item.properties.image_data != null) {
           const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
@@ -173,8 +188,9 @@ export class SVGRenderer extends EventTarget {
         try {
           const component = await this.libraryLoader.load(symFileName);
           const parsed = parse(component);
+          const componentProperties = { ...item.properties, symname: symbolName };
           for (const subItem of parsed) {
-            await this.renderItem(subItem, g, { ...item.properties, symname: symbolName });
+            await this.renderItem(subItem, g, componentProperties);
           }
         } catch (e) {
           console.error('Error loading component', symFileName, e);
