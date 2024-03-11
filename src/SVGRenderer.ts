@@ -28,8 +28,9 @@ export class SVGRenderer extends EventTarget {
     parent: SVGElement,
     properties: Record<string, string> = {},
   ) {
-    // Many xschem symbols use the spice_get_voltage property, so specify a default value
+    // Many xschem symbols use the spice_get_voltage/spice_get_current property, so specify a default value
     properties.spice_get_voltage ??= '';
+    properties.spice_get_current ??= '';
 
     switch (item.type) {
       case 'Wire': {
