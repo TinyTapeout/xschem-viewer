@@ -87,6 +87,11 @@ export class SVGRenderer extends EventTarget {
       }
 
       case 'Rectangle': {
+        const flags = (item.properties?.flags ?? '').split(',');
+        if (flags.includes('graph')) {
+          // We currently don't support graph rectangles
+          break;
+        }
         if (item.properties.image_data != null) {
           const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
           image.setAttribute('x', Math.min(item.x1, item.x2).toString());
