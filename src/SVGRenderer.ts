@@ -59,8 +59,16 @@ export class SVGRenderer extends EventTarget {
       }
 
       case 'Text': {
+        // attribute substitution
+        const text = item.text.replace(/@([\w#:]+)/g, (match, attrName: string) => {
+          if (attrName.startsWith('#') && attrName.endsWith(':net_name')) {
+            // see https://github.com/TinyTapeout/xschem-viewer/issues/1#issuecomment-1989506966
+            return '';
+          }
+          return properties[attrName] ?? match;
+        });
         // deal with multi-line text
-        const lines = item.text.split('\n');
+        const lines = text.split('\n');
         const layer = item.properties.layer != null ? Number(item.properties.layer) : Layers.Text;
         const hCenter = item.properties.hcenter === 'true';
         const vCenter = item.properties.vcenter === 'true';
@@ -80,13 +88,7 @@ export class SVGRenderer extends EventTarget {
             text.setAttribute('text-anchor', 'middle');
           }
           text.setAttribute('alignment-baseline', vCenter ? 'middle' : 'before-edge');
-          text.textContent = lines[i].replace(/@([\w#:]+)/g, (match, attrName: string) => {
-            if (attrName.startsWith('#') && attrName.endsWith(':net_name')) {
-              // see https://github.com/TinyTapeout/xschem-viewer/issues/1#issuecomment-1989506966
-              return '';
-            }
-            return properties[attrName] ?? match;
-          });
+          text.textContent = lines[i];
           parent.appendChild(text);
         }
         break;
