@@ -5,9 +5,12 @@
 import { Layers } from './Layers';
 import { type LibraryLoader } from './LibraryLoader';
 import { EventEmitter } from './util/EventEmitter';
-import { parse, type VersionObject, type Object_1 as XschemObject } from './xschem-parser';
+import { isPointInsideWire } from './util/geometry';
+import type { VersionObject, Wire, Object_1 as XschemObject } from './xschem-parser';
+import { parse } from './xschem-parser';
 
 const fontScale = 50;
+const junctionRadius = 3;
 
 export class SVGRenderer extends EventTarget {
   private readonly componentClickEmitter = new EventEmitter<string>();
@@ -222,6 +225,50 @@ export class SVGRenderer extends EventTarget {
     }
   }
 
+  private renderJunctions(wires: Wire[], targetEl: SVGSVGElement) {
+    const endPoints = new Map<string, number>();
+    for (const wire of wires) {
+      const key1 = `${wire.x1},${wire.y1}`;
+      const key2 = `${wire.x2},${wire.y2}`;
+      endPoints.set(key1, (endPoints.get(key1) ?? 0) + 1);
+      endPoints.set(key2, (endPoints.get(key2) ?? 0) + 1);
+    }
+
+    // a Junction is defined as a point where 3 or more wires meet
+    const junctions = new Set<string>();
+    for (const [key, count] of endPoints) {
+      if (count >= 3) {
+        junctions.add(key);
+      }
+    }
+
+    // Or a point where one wire ends in the middle of another wire
+    for (const wire of wires) {
+      for (const otherWire of wires) {
+        if (wire === otherWire) {
+          continue;
+        }
+
+        if (isPointInsideWire({ x: otherWire.x1, y: otherWire.y1 }, wire)) {
+          junctions.add(`${otherWire.x1},${otherWire.y1}`);
+        }
+        if (isPointInsideWire({ x: otherWire.x2, y: otherWire.y2 }, wire)) {
+          junctions.add(`${otherWire.x2},${otherWire.y2}`);
+        }
+      }
+    }
+
+    for (const coords of junctions) {
+      const [x, y] = coords.split(',').map(Number);
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', x.toString());
+      circle.setAttribute('cy', y.toString());
+      circle.setAttribute('r', junctionRadius.toString());
+      circle.setAttribute('fill', this.colors[Layers.Wire]);
+      targetEl.appendChild(circle);
+    }
+  }
+
   async render(path: string, targetEl: SVGSVGElement) {
     const schematic = parse(await this.libraryLoader.load(path));
     targetEl.innerHTML = '';
@@ -230,6 +277,8 @@ export class SVGRenderer extends EventTarget {
     for (const item of schematic) {
       await this.renderItem(item, targetEl, {});
     }
+    const wires = schematic.filter((item) => item.type === 'Wire') as Wire[];
+    this.renderJunctions(wires, targetEl);
     const bbox = targetEl.getBBox({ stroke: true });
     targetEl.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
     targetEl.setAttribute('width', `${bbox.width}`);
