@@ -13,6 +13,11 @@ import { parse } from './xschem-parser';
 const fontScale = 50;
 const junctionRadius = 3;
 
+interface XSchemTransform {
+  flip: boolean;
+  rotation: number;
+}
+
 export class SVGRenderer extends EventTarget {
   private readonly componentClickEmitter = new EventEmitter<string>();
   readonly onComponentClick = this.componentClickEmitter.event;
@@ -31,6 +36,7 @@ export class SVGRenderer extends EventTarget {
     item: XschemObject | VersionObject,
     parent: SVGElement,
     properties: Record<string, string> = {},
+    globalTransform: XSchemTransform = { flip: false, rotation: 0 },
   ) {
     // Many xschem symbols use the spice_get_voltage/spice_get_current property, so specify a default value
     properties.spice_get_voltage ??= '';
@@ -98,17 +104,46 @@ export class SVGRenderer extends EventTarget {
               : Layers.Text;
         const hCenter = item.properties.hcenter === 'true';
         const vCenter = item.properties.vcenter === 'true';
+        const finalRotation = (item.rotation + globalTransform.rotation) % 4;
+        const vMirror = finalRotation === 2 || finalRotation === 1;
+        let hMirror = vMirror;
+        if (item.mirror === 1) {
+          hMirror = !hMirror;
+        }
+        if (globalTransform.flip) {
+          hMirror = !hMirror;
+        }
 
         for (let i = 0; i < lines.length; i++) {
           const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          text.setAttribute('x', item.x.toString());
-          text.setAttribute('y', (item.y + i * item.vSize * fontScale).toString());
+          const transforms = [`translate(${item.x},${item.y})`];
+          if (item.rotation !== 0) {
+            transforms.push(`rotate(${item.rotation * 90})`);
+          }
+          if (item.mirror === 1) {
+            transforms.push('scale(-1, 1)');
+          }
+          const lineIndex = vMirror ? lines.length - i - 1 : i;
+          transforms.push(`translate(0, ${lineIndex * item.vSize * fontScale})`);
+          if (vMirror) {
+            transforms.push('scale(1, -1)');
+          }
+          if (hMirror) {
+            transforms.push('scale(-1, 1)');
+          }
+          text.setAttribute('transform', transforms.join(' '));
           text.setAttribute('font-size', (item.vSize * fontScale).toString());
           text.setAttribute('fill', this.colors[layer]);
           if (hCenter) {
             text.setAttribute('text-anchor', 'middle');
+          } else if (hMirror) {
+            text.setAttribute('text-anchor', 'end');
           }
-          text.setAttribute('alignment-baseline', vCenter ? 'middle' : 'before-edge');
+
+          text.setAttribute(
+            'alignment-baseline',
+            vCenter ? 'middle' : vMirror ? 'after-edge' : 'before-edge',
+          );
           text.textContent = lines[i];
           parent.appendChild(text);
         }
@@ -207,6 +242,9 @@ export class SVGRenderer extends EventTarget {
         if (item.rotation !== 0) {
           transforms.push(`rotate(${item.rotation * 90})`);
         }
+        if (item.flip) {
+          transforms.push('scale(-1, 1)');
+        }
         g.setAttribute('transform', transforms.join(' '));
         g.setAttribute('tabindex', '0');
         parent.appendChild(g);
@@ -223,7 +261,10 @@ export class SVGRenderer extends EventTarget {
           const parsed = parse(component);
           const componentProperties = { ...item.properties, symname: symbolName };
           for (const subItem of parsed) {
-            await this.renderItem(subItem, g, componentProperties);
+            await this.renderItem(subItem, g, componentProperties, {
+              flip: item.flip ? !globalTransform.flip : globalTransform.flip,
+              rotation: (globalTransform.rotation + item.rotation) % 4,
+            });
           }
         } catch (e) {
           console.error('Error loading component', symFileName, e);
