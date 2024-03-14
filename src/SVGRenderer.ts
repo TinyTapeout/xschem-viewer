@@ -4,6 +4,7 @@
 
 import { Layers } from './Layers';
 import { type LibraryLoader } from './LibraryLoader';
+import { tclEval } from './tcl';
 import { EventEmitter } from './util/EventEmitter';
 import { isPointInsideWire } from './util/geometry';
 import type { VersionObject, Wire, Object_1 as XschemObject } from './xschem-parser';
@@ -62,24 +63,41 @@ export class SVGRenderer extends EventTarget {
       }
 
       case 'Text': {
+        const hide = item.properties.hide === 'true';
+        if (hide) {
+          // hidden for now
+          break;
+        }
+
         // attribute substitution
-        const text = item.text.replace(/@([\w#:]+)/g, (match, attrName: string) => {
+        let text = item.text.replace(/@([\w#:]+)/g, (match, attrName: string) => {
           if (attrName.startsWith('#') && attrName.endsWith(':net_name')) {
             // see https://github.com/TinyTapeout/xschem-viewer/issues/1#issuecomment-1989506966
             return '';
           }
           return properties[attrName] ?? match;
         });
+        if (text.startsWith('tcleval(') && text.endsWith(')')) {
+          const tclExpr = text.substring(8, text.length - 1);
+          text = await tclEval(`string cat "${tclExpr}"`).catch((error) => {
+            console.warn('tcleval failed:', tclExpr, error);
+          });
+        }
+
+        // Special case: labels inside pins use the Wire layer.
+        // see https://github.com/TinyTapeout/xschem-viewer/issues/2#issuecomment-1997048537
+        const insidePin = ['ipin', 'opin', 'iopin', 'label'].includes(properties.type ?? '');
+
         // deal with multi-line text
         const lines = text.split('\n');
-        const layer = item.properties.layer != null ? Number(item.properties.layer) : Layers.Text;
+        const layer =
+          item.properties.layer != null
+            ? Number(item.properties.layer)
+            : insidePin
+              ? Layers.Wire
+              : Layers.Text;
         const hCenter = item.properties.hcenter === 'true';
         const vCenter = item.properties.vcenter === 'true';
-        const hide = item.properties.hide === 'true';
-        if (hide) {
-          // hidden for now
-          break;
-        }
 
         for (let i = 0; i < lines.length; i++) {
           const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
