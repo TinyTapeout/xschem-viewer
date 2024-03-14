@@ -41,7 +41,7 @@ Object
   / Verilog
   / VHDL
   / TEDAx
-  / Netlisting
+  / GlobalProperties
   / EmbeddedSymbol
 
 Spice
@@ -56,8 +56,8 @@ VHDL
 TEDAx
   = "E" _ content:CurlyBracedString { return { type: "TEDAx", content }; }
 
-Netlisting
-  = "K" _ content:CurlyBracedString { return { type: "Netlisting", content }; }
+GlobalProperties
+  = "K" _ properties:Properties { return { type: "GlobalProperties", properties }; }
 
 CurlyBracedString
   = "{" _ content:(Escape / NotEscape)* "}" {

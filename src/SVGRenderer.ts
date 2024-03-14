@@ -231,8 +231,11 @@ export class SVGRenderer extends EventTarget {
         break;
       }
 
+      case 'GlobalProperties':
+        Object.assign(properties, item.properties);
+        break;
+
       case 'Version':
-      case 'Netlisting':
       case 'Verilog':
       case 'Spice':
       case 'VHDL':

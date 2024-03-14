@@ -451,9 +451,9 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
         return { type: 'TEDAx', content };
       }; // @ts-ignore
 
-      var peg$f10 = function (content) {
+      var peg$f10 = function (properties) {
         // @ts-ignore
-        return { type: 'Netlisting', content };
+        return { type: 'GlobalProperties', properties };
       }; // @ts-ignore
 
       var peg$f11 = function (content) {
@@ -1419,7 +1419,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
                             // @ts-ignore
                             if (s0 === peg$FAILED) {
                               // @ts-ignore
-                              s0 = peg$parseNetlisting();
+                              s0 = peg$parseGlobalProperties();
                               // @ts-ignore
                               if (s0 === peg$FAILED) {
                                 // @ts-ignore
@@ -1659,7 +1659,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
 
       // @ts-ignore
       function // @ts-ignore
-      peg$parseNetlisting() {
+      peg$parseGlobalProperties() {
         // @ts-ignore
         var s0, s1, s2, s3;
 
@@ -1685,7 +1685,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
           // @ts-ignore
           s2 = peg$parse_();
           // @ts-ignore
-          s3 = peg$parseCurlyBracedString();
+          s3 = peg$parseProperties();
           // @ts-ignore
           if (s3 !== peg$FAILED) {
             // @ts-ignore
@@ -4149,13 +4149,16 @@ export type Object_1 =
   | Verilog
   | VHDL
   | TEDAx
-  | Netlisting
+  | GlobalProperties
   | EmbeddedSymbol;
 export type Spice = { type: 'Spice'; content: CurlyBracedString };
 export type Verilog = { type: 'Verilog'; content: CurlyBracedString };
 export type VHDL = { type: 'VHDL'; content: CurlyBracedString };
 export type TEDAx = { type: 'TEDAx'; content: CurlyBracedString };
-export type Netlisting = { type: 'Netlisting'; content: CurlyBracedString };
+export type GlobalProperties = {
+  type: 'GlobalProperties';
+  properties: Properties;
+};
 export type CurlyBracedString = string;
 export type Escape = '\\' | '{' | '}';
 export type NotEscape = string;
