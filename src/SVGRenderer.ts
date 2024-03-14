@@ -145,22 +145,32 @@ export class SVGRenderer extends EventTarget {
       }
 
       case 'Arc': {
-        const arc = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        const startAngle = -item.startAngle;
-        const sweepAngle = -item.sweepAngle;
-        const x1 = item.centerX + item.radius * Math.cos((startAngle * Math.PI) / 180);
-        const y1 = item.centerY + item.radius * Math.sin((startAngle * Math.PI) / 180);
-        const x2 =
-          item.centerX + item.radius * Math.cos(((startAngle + sweepAngle) * Math.PI) / 180);
-        const y2 =
-          item.centerY + item.radius * Math.sin(((startAngle + sweepAngle) * Math.PI) / 180);
-        const largeArcFlag = sweepAngle > 180 ? 1 : 0;
-        const sweepFlag = sweepAngle > 0 ? 1 : 0;
-        const d = `M ${x1} ${y1} A ${item.radius} ${item.radius} 0 ${largeArcFlag} ${sweepFlag} ${x2} ${y2}`;
-        arc.setAttribute('d', d);
-        arc.setAttribute('fill', 'none');
-        arc.setAttribute('stroke', this.colors[item.layer]);
-        parent.appendChild(arc);
+        if (Math.abs(item.sweepAngle) >= 360) {
+          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('cx', item.centerX.toString());
+          circle.setAttribute('cy', item.centerY.toString());
+          circle.setAttribute('r', item.radius.toString());
+          circle.setAttribute('fill', 'none');
+          circle.setAttribute('stroke', this.colors[item.layer]);
+          parent.appendChild(circle);
+        } else {
+          const arc = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          const startAngle = -item.startAngle;
+          const sweepAngle = -item.sweepAngle;
+          const x1 = item.centerX + item.radius * Math.cos((startAngle * Math.PI) / 180);
+          const y1 = item.centerY + item.radius * Math.sin((startAngle * Math.PI) / 180);
+          const x2 =
+            item.centerX + item.radius * Math.cos(((startAngle + sweepAngle) * Math.PI) / 180);
+          const y2 =
+            item.centerY + item.radius * Math.sin(((startAngle + sweepAngle) * Math.PI) / 180);
+          const largeArcFlag = sweepAngle > 180 ? 1 : 0;
+          const sweepFlag = sweepAngle > 0 ? 1 : 0;
+          const d = `M ${x1} ${y1} A ${item.radius} ${item.radius} 0 ${largeArcFlag} ${sweepFlag} ${x2} ${y2}`;
+          arc.setAttribute('d', d);
+          arc.setAttribute('fill', 'none');
+          arc.setAttribute('stroke', this.colors[item.layer]);
+          parent.appendChild(arc);
+        }
         break;
       }
 
