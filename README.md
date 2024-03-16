@@ -5,6 +5,12 @@
 
 Explore and visualize [XSchem](https://xschem.sourceforge.io/stefan/index.html) schematics in your browser.
 
+## Online version
+
+To use the online version, simply go to https://xschem-viewer.com/. 
+
+You can add the URL of your `.sch` file to the end of the URL to load it directly, e.g. https://xschem-viewer.com/?file=https://github.com/RTimothyEdwards/sky130_ef_ip__rc_osc_500k/blob/main/xschem/sky130_ef_ip__rc_osc_500k.sch
+
 ## Local Development
 
 ### Prerequisites
