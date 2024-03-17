@@ -1,5 +1,9 @@
 import waclUrl from './wacl.wasm?url';
 export const wacl = (function () {
+  function require() {
+    throw new Error('Dynamic requires are not currently supported by wacl');
+  }
+
   var _Interp = null;
   var _getInterp = null;
   var _eval = null;
