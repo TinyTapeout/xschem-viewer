@@ -88,7 +88,7 @@ renderer.onComponentClick.listen(async (path) => {
   }
 
   const newParams = new URLSearchParams(window.location.search);
-  newParams.set('file', path);
+  newParams.set('file', libraryLoader.pathToUrl.get(path) ?? path);
   history.pushState({ path }, '', '?' + newParams.toString());
   await render(path);
 });

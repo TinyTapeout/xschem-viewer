@@ -10,7 +10,8 @@ export interface ILibraryDefinition {
 }
 
 export class LibraryLoader {
-  readonly cache = new Map<string, string>();
+  private readonly cache = new Map<string, string>();
+  readonly pathToUrl = new Map<string, string>();
 
   baseURL?: string;
 
@@ -54,6 +55,7 @@ export class LibraryLoader {
       const url = new URL(path, githubURLToRaw(this.baseURL));
       const result = await fetch(url);
       if (result.ok) {
+        this.pathToUrl.set(path, url.toString());
         return result;
       }
     }
