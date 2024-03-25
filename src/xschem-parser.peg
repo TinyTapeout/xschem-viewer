@@ -79,9 +79,12 @@ Pair
   = key:PropertyName _ "=" _ value:PropertyValue {
       return [key, value];
     }
+  / key:PropertyName {
+      return [];
+    }
 
 PropertyName
-  = [a-zA-Z0-9_]+ { return text(); }
+  = [^ \r\n\t;"\\=}]+ { return text(); }
 
 PropertyValue
   = str:QuotedString { return str.replace(/\\./g, m => m[1]);}

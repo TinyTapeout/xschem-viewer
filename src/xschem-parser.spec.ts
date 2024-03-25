@@ -399,4 +399,36 @@ spiceprefix=X
       },
     ]);
   });
+
+  it('parses an attribute that has non standard characters in its key', () => {
+    const content = `B 2 1400 -440 1660 -260 {+|=bar}`;
+    const result = parse(content);
+    expect(result).toEqual([
+      {
+        type: 'Rectangle',
+        x1: 1400,
+        y1: -440,
+        x2: 1660,
+        y2: -260,
+        layer: 2,
+        properties: { '+|': 'bar' },
+      },
+    ]);
+  });
+
+  it('parses an attribute list with garbage', () => {
+    const content = `B 2 1400 -440 1660 -260 {foo bar baz | + name=test}`;
+    const result = parse(content);
+    expect(result).toEqual([
+      {
+        type: 'Rectangle',
+        x1: 1400,
+        y1: -440,
+        x2: 1660,
+        y2: -260,
+        layer: 2,
+        properties: { name: 'test' },
+      },
+    ]);
+  });
 });

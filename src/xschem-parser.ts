@@ -357,7 +357,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
       var peg$r0 = /^[0-9.]/;
       var peg$r1 = /^[^}]/;
       var peg$r2 = /^[^\\{}]/;
-      var peg$r3 = /^[a-zA-Z0-9_]/;
+      var peg$r3 = /^[^ \r\n\t;"\\=}]/;
       var peg$r4 = /^[^ \r\n\t{}]/;
       var peg$r5 = /^[^\\"]/;
       var peg$r6 = /^[0-9]/;
@@ -379,7 +379,11 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
       var peg$e13 = peg$literalExpectation('\\', false);
       var peg$e14 = peg$classExpectation(['\\', '{', '}'], true, false);
       var peg$e15 = peg$literalExpectation('=', false);
-      var peg$e16 = peg$classExpectation([['a', 'z'], ['A', 'Z'], ['0', '9'], '_'], false, false);
+      var peg$e16 = peg$classExpectation(
+        [' ', '\r', '\n', '\t', ';', '"', '\\', '=', '}'],
+        true,
+        false,
+      );
       var peg$e17 = peg$classExpectation([' ', '\r', '\n', '\t', '{', '}'], true, false);
       var peg$e18 = peg$literalExpectation('"', false);
       var peg$e19 = peg$classExpectation(['\\', '"'], true, false);
@@ -483,42 +487,47 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
         return [key, value];
       }; // @ts-ignore
 
-      var peg$f16 = function () {
+      var peg$f16 = function (key) {
+        // @ts-ignore
+        return [];
+      }; // @ts-ignore
+
+      var peg$f17 = function () {
         // @ts-ignore
         return text();
       }; // @ts-ignore
 
-      var peg$f17 = function (str) {
+      var peg$f18 = function (str) {
         // @ts-ignore
         return str.replace(/\\./g, (m) => m[1]);
       }; // @ts-ignore
 
-      var peg$f18 = function (chars) {
+      var peg$f19 = function (chars) {
         // @ts-ignore
         return chars.join('');
       }; // @ts-ignore
 
-      var peg$f19 = function (string) {
+      var peg$f20 = function (string) {
         // @ts-ignore
         return string.join('');
       }; // @ts-ignore
 
-      var peg$f20 = function () {
+      var peg$f21 = function () {
         // @ts-ignore
         return text();
       }; // @ts-ignore
 
-      var peg$f21 = function () {
+      var peg$f22 = function () {
         // @ts-ignore
         return '\\"';
       }; // @ts-ignore
 
-      var peg$f22 = function (value) {
+      var peg$f23 = function (value) {
         // @ts-ignore
         return value;
       }; // @ts-ignore
 
-      var peg$f23 = function (layer, x1, y1, x2, y2, props) {
+      var peg$f24 = function (layer, x1, y1, x2, y2, props) {
         // @ts-ignore
         return {
           // @ts-ignore
@@ -538,7 +547,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
         };
       }; // @ts-ignore
 
-      var peg$f24 = function (layer, x1, y1, x2, y2, props) {
+      var peg$f25 = function (layer, x1, y1, x2, y2, props) {
         // @ts-ignore
         return {
           // @ts-ignore
@@ -558,7 +567,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
         };
       }; // @ts-ignore
 
-      var peg$f25 = function (layer, pointCount, points, props) {
+      var peg$f26 = function (layer, pointCount, points, props) {
         // @ts-ignore
         return {
           // @ts-ignore
@@ -572,17 +581,17 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
         };
       }; // @ts-ignore
 
-      var peg$f26 = function (first, rest) {
+      var peg$f27 = function (first, rest) {
         // @ts-ignore
         return [first].concat(rest.map((r) => r[1]));
       }; // @ts-ignore
 
-      var peg$f27 = function (x, y) {
+      var peg$f28 = function (x, y) {
         // @ts-ignore
         return { x, y };
       }; // @ts-ignore
 
-      var peg$f28 = function (layer, centerX, centerY, radius, startAngle, sweepAngle, props) {
+      var peg$f29 = function (layer, centerX, centerY, radius, startAngle, sweepAngle, props) {
         // @ts-ignore
         return {
           // @ts-ignore
@@ -604,7 +613,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
         };
       }; // @ts-ignore
 
-      var peg$f29 = function (text, x, y, rotation, mirror, hSize, vSize, props) {
+      var peg$f30 = function (text, x, y, rotation, mirror, hSize, vSize, props) {
         // @ts-ignore
         return {
           // @ts-ignore
@@ -628,7 +637,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
         };
       }; // @ts-ignore
 
-      var peg$f30 = function (x1, y1, x2, y2, props) {
+      var peg$f31 = function (x1, y1, x2, y2, props) {
         // @ts-ignore
         return {
           // @ts-ignore
@@ -646,7 +655,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
         };
       }; // @ts-ignore
 
-      var peg$f31 = function (reference, x, y, rotation, flip, props) {
+      var peg$f32 = function (reference, x, y, rotation, flip, props) {
         // @ts-ignore
         return {
           // @ts-ignore
@@ -666,14 +675,9 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
         };
       }; // @ts-ignore
 
-      var peg$f32 = function (symbol) {
+      var peg$f33 = function (symbol) {
         // @ts-ignore
         return { type: 'EmbeddedSymbol', symbol };
-      }; // @ts-ignore
-
-      var peg$f33 = function (n) {
-        // @ts-ignore
-        return parseFloat(n);
       }; // @ts-ignore
 
       var peg$f34 = function (n) {
@@ -681,12 +685,17 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
         return parseFloat(n);
       }; // @ts-ignore
 
-      var peg$f35 = function () {
+      var peg$f35 = function (n) {
+        // @ts-ignore
+        return parseFloat(n);
+      }; // @ts-ignore
+
+      var peg$f36 = function () {
         // @ts-ignore
         return parseFloat(text());
       }; // @ts-ignore
 
-      var peg$f36 = function () {
+      var peg$f37 = function () {
         // @ts-ignore
         return parseInt(text(), 10);
       };
@@ -2164,6 +2173,22 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
           // @ts-ignore
           s0 = peg$FAILED;
         }
+        // @ts-ignore
+        if (s0 === peg$FAILED) {
+          // @ts-ignore
+          s0 = peg$currPos;
+          // @ts-ignore
+          s1 = peg$parsePropertyName();
+          // @ts-ignore
+          if (s1 !== peg$FAILED) {
+            // @ts-ignore
+            peg$savedPos = s0;
+            // @ts-ignore
+            s1 = peg$f16(s1);
+          }
+          // @ts-ignore
+          s0 = s1;
+        }
 
         // @ts-ignore
         return s0;
@@ -2226,7 +2251,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
           // @ts-ignore
           peg$savedPos = s0;
           // @ts-ignore
-          s1 = peg$f16();
+          s1 = peg$f17();
         }
         // @ts-ignore
         s0 = s1;
@@ -2250,7 +2275,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
           // @ts-ignore
           peg$savedPos = s0;
           // @ts-ignore
-          s1 = peg$f17(s1);
+          s1 = peg$f18(s1);
         }
         // @ts-ignore
         s0 = s1;
@@ -2331,7 +2356,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
           // @ts-ignore
           peg$savedPos = s0;
           // @ts-ignore
-          s1 = peg$f18(s1);
+          s1 = peg$f19(s1);
         }
         // @ts-ignore
         s0 = s1;
@@ -2406,7 +2431,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
             // @ts-ignore
             peg$savedPos = s0;
             // @ts-ignore
-            s0 = peg$f19(s2);
+            s0 = peg$f20(s2);
             // @ts-ignore
           } else {
             // @ts-ignore
@@ -2483,7 +2508,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
           // @ts-ignore
           peg$savedPos = s0;
           // @ts-ignore
-          s1 = peg$f20();
+          s1 = peg$f21();
         }
         // @ts-ignore
         s0 = s1;
@@ -2520,7 +2545,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
           // @ts-ignore
           peg$savedPos = s0;
           // @ts-ignore
-          s1 = peg$f21();
+          s1 = peg$f22();
         }
         // @ts-ignore
         s0 = s1;
@@ -2565,7 +2590,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
               // @ts-ignore
               peg$savedPos = s0;
               // @ts-ignore
-              s0 = peg$f22(s2);
+              s0 = peg$f23(s2);
               // @ts-ignore
             } else {
               // @ts-ignore
@@ -2650,7 +2675,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
                       // @ts-ignore
                       peg$savedPos = s0;
                       // @ts-ignore
-                      s0 = peg$f23(s3, s5, s7, s9, s11, s13);
+                      s0 = peg$f24(s3, s5, s7, s9, s11, s13);
                       // @ts-ignore
                     } else {
                       // @ts-ignore
@@ -2769,7 +2794,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
                       // @ts-ignore
                       peg$savedPos = s0;
                       // @ts-ignore
-                      s0 = peg$f24(s3, s5, s7, s9, s11, s13);
+                      s0 = peg$f25(s3, s5, s7, s9, s11, s13);
                       // @ts-ignore
                     } else {
                       // @ts-ignore
@@ -2878,7 +2903,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
                   // @ts-ignore
                   peg$savedPos = s0;
                   // @ts-ignore
-                  s0 = peg$f25(s3, s5, s7, s9);
+                  s0 = peg$f26(s3, s5, s7, s9);
                   // @ts-ignore
                 } else {
                   // @ts-ignore
@@ -2990,7 +3015,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
           // @ts-ignore
           peg$savedPos = s0;
           // @ts-ignore
-          s0 = peg$f26(s1, s2);
+          s0 = peg$f27(s1, s2);
           // @ts-ignore
         } else {
           // @ts-ignore
@@ -3024,7 +3049,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
             // @ts-ignore
             peg$savedPos = s0;
             // @ts-ignore
-            s0 = peg$f27(s1, s3);
+            s0 = peg$f28(s1, s3);
             // @ts-ignore
           } else {
             // @ts-ignore
@@ -3114,7 +3139,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
                         // @ts-ignore
                         peg$savedPos = s0;
                         // @ts-ignore
-                        s0 = peg$f28(s3, s5, s7, s9, s11, s13, s15);
+                        s0 = peg$f29(s3, s5, s7, s9, s11, s13, s15);
                         // @ts-ignore
                       } else {
                         // @ts-ignore
@@ -3252,7 +3277,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
                           // @ts-ignore
                           peg$savedPos = s0;
                           // @ts-ignore
-                          s0 = peg$f29(s3, s5, s7, s9, s11, s13, s15, s17);
+                          s0 = peg$f30(s3, s5, s7, s9, s11, s13, s15, s17);
                           // @ts-ignore
                         } else {
                           // @ts-ignore
@@ -3379,7 +3404,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
                     // @ts-ignore
                     peg$savedPos = s0;
                     // @ts-ignore
-                    s0 = peg$f30(s3, s5, s7, s9, s11);
+                    s0 = peg$f31(s3, s5, s7, s9, s11);
                     // @ts-ignore
                   } else {
                     // @ts-ignore
@@ -3491,7 +3516,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
                       // @ts-ignore
                       peg$savedPos = s0;
                       // @ts-ignore
-                      s0 = peg$f31(s3, s5, s7, s9, s11, s13);
+                      s0 = peg$f32(s3, s5, s7, s9, s11, s13);
                       // @ts-ignore
                     } else {
                       // @ts-ignore
@@ -3599,7 +3624,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
               // @ts-ignore
               peg$savedPos = s0;
               // @ts-ignore
-              s0 = peg$f32(s3);
+              s0 = peg$f33(s3);
               // @ts-ignore
             } else {
               // @ts-ignore
@@ -3641,7 +3666,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
           // @ts-ignore
           peg$savedPos = s0;
           // @ts-ignore
-          s1 = peg$f33(s1);
+          s1 = peg$f34(s1);
         }
         // @ts-ignore
         s0 = s1;
@@ -3665,7 +3690,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
           // @ts-ignore
           peg$savedPos = s0;
           // @ts-ignore
-          s1 = peg$f34(s1);
+          s1 = peg$f35(s1);
         }
         // @ts-ignore
         s0 = s1;
@@ -3839,7 +3864,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
           // @ts-ignore
           peg$savedPos = s0;
           // @ts-ignore
-          s0 = peg$f35();
+          s0 = peg$f36();
           // @ts-ignore
         } else {
           // @ts-ignore
@@ -3929,7 +3954,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
           // @ts-ignore
           peg$savedPos = s0;
           // @ts-ignore
-          s0 = peg$f36();
+          s0 = peg$f37();
           // @ts-ignore
         } else {
           // @ts-ignore
@@ -4163,7 +4188,7 @@ export type CurlyBracedString = string;
 export type Escape = '\\' | '{' | '}';
 export type NotEscape = string;
 export type Properties = Record<string, string>;
-export type Pair = [PropertyName, PropertyValue];
+export type Pair = [PropertyName, PropertyValue] | [];
 export type PropertyName = string;
 export type PropertyValue = any | LiteralString;
 export type LiteralString = string;
