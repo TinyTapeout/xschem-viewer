@@ -58,6 +58,18 @@ export class LibraryLoader {
         this.pathToUrl.set(path, url.toString());
         return result;
       }
+
+      // Try to look under the root of the github repo
+      const altPath = url.pathname.split('/').slice(0, 4).join('/') + '/' + path;
+      if (url.hostname === 'raw.githubusercontent.com' && url.pathname !== altPath) {
+        url.pathname = altPath;
+        const result = await fetch(url);
+        if (result.ok) {
+          this.pathToUrl.set(path, url.toString());
+          return result;
+        }
+        return await fetch(`https://raw.githubusercontent.com${url.pathname}`);
+      }
     }
     if (!path.includes('/')) {
       // as a fallback, look under devices/
