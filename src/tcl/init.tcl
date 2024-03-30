@@ -3,5 +3,5 @@
 # Author: Uri Shaked
 
 proc ev {args} {
-  return [expr [join $args]]
+  return [format %.4g [expr [join $args]]]
 }
