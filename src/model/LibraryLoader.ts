@@ -2,7 +2,7 @@
 // Copyright 2024 Tiny Tapeout LTD
 // Author: Uri Shaked
 
-import { githubURLToRaw } from './util/github';
+import { githubURLToRaw } from '../util/github';
 
 export interface ILibraryDefinition {
   path: string;

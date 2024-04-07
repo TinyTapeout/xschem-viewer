@@ -1,0 +1,25 @@
+.page {
+  flex: 1;
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 8px;
+}
+
+.urlInput {
+  display: flex;
+}
+
+.urlInput input {
+  flex: 1;
+  padding: 8px;
+  font-size: 16px;
+  margin: 0 8px 0 0;
+}
+
+.urlInput button {
+  padding: 8px;
+  font-size: 16px;
+  background-color: #075fd1;
+  border: solid 1px #075fd1;
+  color: white;
+}

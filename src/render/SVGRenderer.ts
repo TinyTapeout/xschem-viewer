@@ -2,13 +2,13 @@
 // Copyright 2024 Tiny Tapeout LTD
 // Author: Uri Shaked
 
-import { Layers } from './Layers';
-import { type LibraryLoader } from './LibraryLoader';
-import { tclEval } from './tcl';
-import { EventEmitter } from './util/EventEmitter';
-import { isPointInsideWire } from './util/geometry';
-import type { VersionObject, Wire, Object_1 as XschemObject } from './xschem-parser';
-import { parse } from './xschem-parser';
+import { Layers } from '../parser/Layers';
+import { type LibraryLoader } from '../model/LibraryLoader';
+import { tclEval } from '../tcl/tcl';
+import { EventEmitter } from '../util/EventEmitter';
+import { isPointInsideWire } from '../util/geometry';
+import type { VersionObject, Wire, Object_1 as XschemObject } from '../parser/xschem-parser';
+import { parse } from '../parser/xschem-parser';
 
 const fontScale = 50;
 const junctionRadius = 3;

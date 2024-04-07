@@ -2,6 +2,7 @@
   "recommendations": [
     "peggyjs.peggy-language",
     "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint"
+    "dbaeumer.vscode-eslint",
+    "clinyong.vscode-css-modules"
   ]
 }

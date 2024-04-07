@@ -2,11 +2,11 @@
 // Copyright 2024 Tiny Tapeout LTD
 // Author: Uri Shaked
 
-import tclInitCode from './tcl/init.tcl?raw';
+import tclInitCode from './init.tcl?raw';
 let tclInterpPromise: any = null;
 
 export async function tclInit() {
-  const { wacl } = await import('./wacl/wacl');
+  const { wacl } = await import('../wacl/wacl');
   const interp = await new Promise<any>((resolve) => wacl.onReady(resolve));
   interp.Eval(tclInitCode);
   return interp;

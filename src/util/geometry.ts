@@ -1,4 +1,4 @@
-import { type Wire } from '~/xschem-parser';
+import { type Wire } from '~/parser/xschem-parser';
 
 export interface Point {
   x: number;

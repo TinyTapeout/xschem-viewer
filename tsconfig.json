@@ -10,6 +10,8 @@
     "noEmit": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
     "paths": {
       "~/*": ["./src/*"]
     }
