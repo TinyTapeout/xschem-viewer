@@ -245,6 +245,10 @@ export class SVGRenderer extends EventTarget {
         if (item.flip) {
           transforms.push('scale(-1, 1)');
         }
+        if (item.properties.spice_ignore === 'true') {
+          g.style.filter = 'grayscale(1)';
+          g.style.opacity = '0.5';
+        }
         g.setAttribute('transform', transforms.join(' '));
         g.setAttribute('tabindex', '0');
         parent.appendChild(g);
