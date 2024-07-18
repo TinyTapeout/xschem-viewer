@@ -87,6 +87,7 @@ export class SVGRenderer extends EventTarget {
           const tclExpr = text.substring(8, text.length - 1);
           text = await tclEval(`string cat "${tclExpr}"`).catch((error) => {
             console.warn('tcleval failed:', tclExpr, error);
+            return '';
           });
         }
 
