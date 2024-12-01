@@ -68,7 +68,6 @@ export class LibraryLoader {
           this.pathToUrl.set(path, url.toString());
           return result;
         }
-        return await fetch(`https://raw.githubusercontent.com${url.pathname}`);
       }
     }
     if (!path.includes('/')) {
