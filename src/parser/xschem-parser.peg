@@ -21,7 +21,7 @@ VersionString
   }
   
 VersionNumber
-  = version:[0-9.]+ { return text(); }
+  = version:[0-9.]+[A-Z0-9]* { return text(); }
 
 LicenseText
   = text:[^}]* { return text.join(""); }

@@ -322,6 +322,19 @@ spiceprefix=X
     ]);
   });
 
+  it('parses a file with version number with RC suffix (issue #14)', () => {
+    const content = `v {xschem version=3.4.6RC file_version=1.2}`;
+    const result = parse(content);
+    expect(result).toEqual([
+      {
+        type: 'Version',
+        version: '3.4.6RC',
+        fileVersion: '1.2',
+        license: '',
+      },
+    ]);
+  });
+
   it('parses a version object that contains license text correctly', () => {
     const content = `v {xschem version=3.4.5 file_version=1.2
 * Copyright 2021 Stefan Frederik Schippers
