@@ -39,6 +39,7 @@ Object
   / Component
   / Spice
   / Verilog
+  / Spectre
   / VHDL
   / TEDAx
   / GlobalProperties
@@ -49,6 +50,9 @@ Spice
 
 Verilog
   = "V" _ content:CurlyBracedString { return { type: "Verilog", content }; }
+
+Spectre
+  = "F" _ content:CurlyBracedString { return { type: "Spectre", content }; }
 
 VHDL
   = "G" _ content:CurlyBracedString { return { type: "VHDL", content }; }
