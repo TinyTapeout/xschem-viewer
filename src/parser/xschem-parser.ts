@@ -359,7 +359,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
       var peg$r1 = /^[A-Z0-9]/;
       var peg$r2 = /^[^}]/;
       var peg$r3 = /^[^\\{}]/;
-      var peg$r4 = /^[^ \r\n\t;"\\=}]/;
+      var peg$r4 = /^[^ \r\n\t;\\=}]/;
       var peg$r5 = /^[^ \r\n\t{}]/;
       var peg$r6 = /^[^\\"]/;
       var peg$r7 = /^[0-9]/;
@@ -390,11 +390,7 @@ const peggyParser: { parse: any; SyntaxError: any; DefaultTracer?: any } = // Ge
       var peg$e15 = peg$literalExpectation('\\', false);
       var peg$e16 = peg$classExpectation(['\\', '{', '}'], true, false);
       var peg$e17 = peg$literalExpectation('=', false);
-      var peg$e18 = peg$classExpectation(
-        [' ', '\r', '\n', '\t', ';', '"', '\\', '=', '}'],
-        true,
-        false,
-      );
+      var peg$e18 = peg$classExpectation([' ', '\r', '\n', '\t', ';', '\\', '=', '}'], true, false);
       var peg$e19 = peg$classExpectation([' ', '\r', '\n', '\t', '{', '}'], true, false);
       var peg$e20 = peg$literalExpectation('"', false);
       var peg$e21 = peg$classExpectation(['\\', '"'], true, false);

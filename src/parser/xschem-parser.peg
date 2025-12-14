@@ -88,7 +88,7 @@ Pair
     }
 
 PropertyName
-  = [^ \r\n\t;"\\=}]+ { return text(); }
+  = [^ \r\n\t;\\=}]+ { return text(); }
 
 PropertyValue
   = str:QuotedString { return str.replace(/\\./g, m => m[1]);}
