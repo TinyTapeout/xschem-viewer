@@ -283,6 +283,7 @@ export class SVGRenderer extends EventTarget {
 
       case 'Version':
       case 'Verilog':
+      case 'Spectre':
       case 'Spice':
       case 'VHDL':
       case 'TEDAx':
