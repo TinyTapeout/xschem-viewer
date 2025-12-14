@@ -339,8 +339,8 @@ export class SVGRenderer extends EventTarget {
   async render(path: string, targetEl: SVGSVGElement) {
     const schematic = parse(await this.libraryLoader.load(path));
     targetEl.innerHTML = '';
-    targetEl.setAttribute('width', '0');
-    targetEl.setAttribute('height', '0');
+    targetEl.setAttribute('width', '');
+    targetEl.setAttribute('height', '');
     for (const item of schematic) {
       await this.renderItem(item, targetEl, {});
     }
