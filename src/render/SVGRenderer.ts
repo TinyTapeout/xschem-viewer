@@ -256,11 +256,17 @@ export class SVGRenderer extends EventTarget {
         const symFileName = item.symbolReference.endsWith('.sym')
           ? item.symbolReference
           : item.symbolReference + '.sym';
-        const componentClickHandler = () => {
-          this.componentClickEmitter.fire(symFileName.replace(/\.sym$/, '.sch'));
-        };
-        g.addEventListener('click', componentClickHandler);
-        g.addEventListener('touchend', componentClickHandler);
+        // A tap or click (not the end of a pan) opens the component's schematic
+        let down: { x: number; y: number } | undefined;
+        g.addEventListener('pointerdown', (e) => {
+          down = { x: e.clientX, y: e.clientY };
+        });
+        g.addEventListener('pointerup', (e) => {
+          if (down != null && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 5) {
+            this.componentClickEmitter.fire(symFileName.replace(/\.sym$/, '.sch'));
+          }
+          down = undefined;
+        });
         try {
           const component = await this.libraryLoader.load(symFileName);
           const parsed = parse(component);
@@ -274,6 +280,16 @@ export class SVGRenderer extends EventTarget {
         } catch (e) {
           console.error('Error loading component', symFileName, e);
         }
+        // Make the whole symbol box clickable, not just its thin lines and text
+        const box = g.getBBox();
+        const hitArea = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        hitArea.setAttribute('x', box.x.toString());
+        hitArea.setAttribute('y', box.y.toString());
+        hitArea.setAttribute('width', box.width.toString());
+        hitArea.setAttribute('height', box.height.toString());
+        hitArea.setAttribute('fill', 'none');
+        hitArea.setAttribute('pointer-events', 'all');
+        g.prepend(hitArea);
         break;
       }
 
