@@ -76,3 +76,8 @@ h1 {
   position: relative;
   overflow: hidden;
 }
+
+/* Keep the SVG at its own size: panzoom does the fitting */
+.xschem svg {
+  flex-shrink: 0;
+}
